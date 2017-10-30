@@ -29,11 +29,11 @@ public class SortDemo {
     public static int getMiddle(int[] numbers,int low,int high){
         int temp=numbers[low];
         while (low<high){
-            while ( low<high && numbers[high]>temp){
+            while ( low<high && numbers[high]>=temp){
                 high--;
             }
             numbers[low]=numbers[high];
-            while ( low<high && numbers[low]<temp){
+            while ( low<high && numbers[low]<=temp){
                 low++;
             }
             numbers[high]=numbers[low];
@@ -82,7 +82,6 @@ public class SortDemo {
             temp=numbers[i];
             for (j=i;j>0 && temp<numbers[j-1];j--){
                 numbers[j]=numbers[j-1];
-                printArr(numbers);
             }
             numbers[j]=temp;
         }
@@ -139,16 +138,66 @@ public class SortDemo {
         }
         return numbers;
     }
+
+    //堆排序
+    public static void heapSort(int[] numbers){
+        int size=numbers.length;
+        //循环建堆
+        for(int i=0;i<size-1;i++){
+            //建堆
+            buildMaxHeap(numbers,size-1-i);
+            //交换堆顶和最后一个元素
+            swap(numbers,0,size-1-i);
+            printArr(numbers);
+        }
+    }
+    //对数组从0到lastIndex建立最大顶堆
+    public static void buildMaxHeap(int[] numbers,int lastIndex){
+        //从lastIndex处节点（最后一个节点）的父节点开始
+        for(int i=(lastIndex-1)/2;i>=0;i--){
+            //k保存正在判断的节点
+            int k=i;
+            //如果当前k节点的子节点存在
+            while(k*2+1<=lastIndex){
+                //k节点的左子节点的索引
+                int biggerIndex=2*k+1;
+                //如果biggerIndex小于lastIndex，即biggerIndex+1代表的k节点的右子节点存在
+                if(biggerIndex<lastIndex){
+                    //如果右子节点的值较大
+                    if(numbers[biggerIndex]<numbers[biggerIndex+1]){
+                        //biggerIndex总是记录较大子节点的索引
+                        biggerIndex++;
+                    }
+                }
+                //如果k节点的值小于其较大的子节点的值
+                if(numbers[k]<numbers[biggerIndex]){
+                    //交换
+                    swap(numbers,k,biggerIndex);
+                    //将biggerIndex赋予k，开始while循环的下一次循环，重新保证k节点的值大于其左右子节点的值
+                    k=biggerIndex;
+                }else{
+                    break;
+                }
+            }
+        }
+    }
+    //交换
+    private static void swap(int[] numbers,int i,int j){
+        int tmp=numbers[i];
+        numbers[i]=numbers[j];
+        numbers[j]=tmp;
+    }
     //测试
     public static void main(String[] args){
-        int[] numbers={12,2,21,13,3,32};
+        int[] numbers={12,2,21,2,13,3,32};
         //BubbleSort(numbers);
         //quick(numbers);
         //selectSort(numbers);
         //insertSort(numbers);
         //shellSort(numbers);
-        int[] arr=sort(numbers,0,numbers.length-1);
-        printArr(arr);
+        //int[] arr=sort(numbers,0,numbers.length-1);
+        heapSort(numbers);
+        printArr(numbers);
     }
 
 }
